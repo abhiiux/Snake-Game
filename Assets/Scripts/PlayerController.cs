@@ -28,9 +28,9 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         transform.Translate(direction * moveSpeed * Time.deltaTime);
-        transform.Rotate(0, 0, value * rotationSpeed * Time.deltaTime);
+        transform.Rotate(Vector3.forward * value * rotationSpeed * Time.deltaTime);
 
-        if (Keyboard.current.spaceKey.isPressed)
+        if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
             GrowSnake();
         }

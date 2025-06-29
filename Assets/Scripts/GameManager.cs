@@ -1,14 +1,15 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     [SerializeField] Transform snakeFood;
+    [SerializeField] Transform eatRock;
     [SerializeField] GameObject failUI;
     [SerializeField] TMP_Text scoreUI;
+    [SerializeField] GameObject winUI;
     private float screenWidth;
     private float screenHeight;
     private int score;
@@ -25,30 +26,33 @@ public class GameManager : MonoBehaviour
 
         failUI.SetActive(false);
     }
-    void Start()
+    IEnumerator Start()
     {
         scoretext = failUI.transform.GetChild(0).GetComponent<TMP_Text>();
 
         float aspectRatio = Camera.main.aspect;
         float orthoSize = Camera.main.orthographicSize;
         screenWidth = orthoSize * aspectRatio;
-        screenHeight = (orthoSize * aspectRatio) / 2f;
+        screenHeight = orthoSize;
 
         screenHeight -= 2f;
         screenWidth -= 2f;
 
-        Invoke("SpawnFood", 5f);
+        yield return new WaitForSeconds(5f);
+        SpawnItem(snakeFood);
+        yield return new WaitForSeconds(12f);
+        SpawnItem(eatRock);
     }
 
-    public void SpawnFood()
+    public void SpawnItem(Transform item)
     {
-        Vector2 spawnPoint = RandomPoint();
+        Vector2 spawnPoint = GetRandomPoint();
 
-        Transform food = Instantiate(snakeFood);
+        Transform food = Instantiate(item);
         food.position = spawnPoint;
     }
 
-    public Vector2 RandomPoint()
+    public Vector2 GetRandomPoint()
     {
         Vector2 point = new Vector2(UnityEngine.Random.Range
                                         (-screenWidth, screenWidth), UnityEngine.Random.Range(screenHeight, -screenHeight));
@@ -60,14 +64,15 @@ public class GameManager : MonoBehaviour
         scoretext.text = score.ToString();
         failUI.SetActive(true);
     }
+
     public void AddScore(int value)
     {
         score += value;
         scoreUI.text = score.ToString();
     }
-    public void Restart()
+    public void WinScreen()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        Time.timeScale = 0f;
+        winUI.SetActive(true);
     }
-
 }

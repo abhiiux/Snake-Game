@@ -6,9 +6,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float followSpeed;
     [SerializeField] int objPoolCount;
     [SerializeField] Transform bodyPrefab;
+    [SerializeField] int snakeBodyCount;
 
     private List<Transform> bodyParts = new List<Transform>();
     private float spacing = 1f;
+    private int currentBodyLength;
 
 
     void Start()
@@ -16,8 +18,12 @@ public class PlayerController : MonoBehaviour
         for (int i = 0; i < objPoolCount; i++)
         {
             Transform newbody = Instantiate(bodyPrefab);
+            newbody.position -= new Vector3(1, 0);
+            newbody.gameObject.SetActive(false);
             bodyParts.Add(newbody);
         }
+
+        SnakeBody(snakeBodyCount);
     }
     void OnTriggerEnter2D(Collider2D collision)
     {
@@ -26,33 +32,39 @@ public class PlayerController : MonoBehaviour
             case "Food":
                 if (collision.TryGetComponent<ISnakeColliable>(out var item))
                 {
-                    GrowSnake(item.OnSnakeCollision());
+                    SnakeBody(item.OnSnakeCollision());
+                    GameManager.Instance.AddScore(item.OnSnakeCollision() - 1);
                 }
                 break;
             case "Wall":
-                Debug.Log($" hit wall {collision.gameObject.name}");
                 GameManager.Instance.StopGame();
                 break;
             case "Snake":
                 Debug.Log($" bitted myself");
-                GameManager.Instance.StopGame();
+                GameManager.Instance.WinScreen();
                 break;
         }
-
-
     }
     void LateUpdate()
     {
         FollowHeadTrail();
     }
 
-    private void GrowSnake(int value)
+    private void SnakeBody(int value)
     {
-        for (int i = 0; i < value; i++)
+        currentBodyLength = Mathf.Clamp(currentBodyLength + value,0,50);
+
+        Debug.Log($" value is pressed and its {value}");
+        for (int i = 0; i < bodyParts.Count; i++)
         {
-            Transform newbody = Instantiate(bodyPrefab);
-            newbody.position = transform.position;
-            bodyParts.Add(newbody);
+            if (i < currentBodyLength)
+            {
+                bodyParts[i].gameObject.SetActive(true);
+            }
+            else
+            {
+                bodyParts[i].gameObject.SetActive(false);
+            }
         }
     }
     private void FollowHeadTrail()

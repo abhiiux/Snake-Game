@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 478fdb420321842698eee5b9a0a1119f
+guid: 2aa1bf17e2b874b94a76f0b701e8d884
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4329407632164072968
-    second: Default_0
+      213: -8413078877067141419
+    second: Snake Body_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 150
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 0
   alphaUsage: 1
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Default_0
+      name: Snake Body_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 86
-        height: 75
+        width: 228
+        height: 228
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 80e2103ad45251c30800000000000000
-      internalID: 4329407632164072968
+      spriteID: 5de1211f55dbe3b80800000000000000
+      internalID: -8413078877067141419
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Default_0: 4329407632164072968
+      Snake Body_0: -8413078877067141419
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

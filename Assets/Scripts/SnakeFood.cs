@@ -7,13 +7,12 @@ public class SnakeFood : MonoBehaviour, ISnakeColliable
     public int OnSnakeCollision()
     {
         Invoke("ChangePosition", 0.5f);
-        GameManager.Instance.AddScore(bodyGrowthCount);
         return bodyGrowthCount;
     }
 
     private void ChangePosition()
     {
-        transform.position = GameManager.Instance.RandomPoint();
+        transform.position = GameManager.Instance.GetRandomPoint();
     }
     
 }

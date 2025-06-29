@@ -1,62 +1,62 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] Transform bodyPrefab;
     [SerializeField] float followSpeed;
-    [SerializeField] float spacing;
-    public InputAction movedirection;
-    public Vector2 direction = Vector2.right;
-    public float moveSpeed;
-    public float rotationSpeed;
-    float value = 0;
+    [SerializeField] int objPoolCount;
+    [SerializeField] Transform bodyPrefab;
 
     private List<Transform> bodyParts = new List<Transform>();
-    private List<Vector2> positionHistory = new List<Vector2>();
+    private float spacing = 1f;
 
-    private void OnEnable()
-    {
-        movedirection.Enable();
-        movedirection.started += ChangeDirection;
-    }
-    private void OnDisable()
-    {
-        movedirection.canceled -= ChangeDirection;
-    }
-    private void Update()
-    {
-        transform.Translate(direction * moveSpeed * Time.deltaTime);
-        transform.Rotate(Vector3.forward * value * rotationSpeed * Time.deltaTime);
 
-        if (Keyboard.current.spaceKey.wasPressedThisFrame)
+    void Start()
+    {
+        for (int i = 0; i < objPoolCount; i++)
         {
-            GrowSnake();
+            Transform newbody = Instantiate(bodyPrefab);
+            bodyParts.Add(newbody);
         }
     }
-    private void LateUpdate()
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        switch (collision.tag)
+        {
+            case "Food":
+                if (collision.TryGetComponent<ISnakeColliable>(out var item))
+                {
+                    GrowSnake(item.OnSnakeCollision());
+                }
+                break;
+            case "Wall":
+                Debug.Log($" hit wall {collision.gameObject.name}");
+                GameManager.Instance.StopGame();
+                break;
+            case "Snake":
+                Debug.Log($" bitted myself");
+                GameManager.Instance.StopGame();
+                break;
+        }
+
+
+    }
+    void LateUpdate()
     {
         FollowHeadTrail();
     }
 
-    public void ChangeDirection(InputAction.CallbackContext context)
+    private void GrowSnake(int value)
     {
-        value = context.ReadValue<float>();
-        Debug.Log($" input is working {value}");
-    }
-
-    private void GrowSnake()
-    {
-        Vector2 spawnPos = bodyParts.Count > 0 ? bodyParts[bodyParts.Count - 1].position : transform.position;
-        Transform newbody = Instantiate(bodyPrefab);
-        newbody.position = spawnPos;
-        bodyParts.Add(newbody);
+        for (int i = 0; i < value; i++)
+        {
+            Transform newbody = Instantiate(bodyPrefab);
+            newbody.position = transform.position;
+            bodyParts.Add(newbody);
+        }
     }
     private void FollowHeadTrail()
-    {
-        positionHistory.Insert(0, transform.position);
-        
+    {        
         for (int i = 0; i < bodyParts.Count; i++)
         {
             Transform target = i == 0 ? transform : bodyParts[i - 1];

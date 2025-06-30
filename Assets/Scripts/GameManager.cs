@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour
 
     public void AddScore(int value)
     {
-        score += value;
+        score = Mathf.Clamp(score + value,0,50);
         scoreUI.text = score.ToString();
     }
     public void WinScreen()
